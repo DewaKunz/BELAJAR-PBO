@@ -282,15 +282,18 @@ if __name__ == "__main__":
 
         elif pilihan == "4":
             console.print(Panel("[bold]Lihat Tabel[/bold]", border_style="magenta"))
-            console.print("[a] Fotografer    [b] Klien    [c] Sesi Foto    [x] Kembali")
+            console.print("[1] Fotografer    [2] Klien    [3] Sesi Foto    [x] Kembali")
             sub = input("Pilih tabel: ").strip().lower()
-            if sub == "a":
+            if sub == "1":
                 db.lihat_tabel("fotografer", ["ID", "Nama", "Kontak", "Spesialisasi"])
-            elif sub == "b":
+            elif sub == "2":
                 db.lihat_tabel("klien", ["ID", "Nama", "Kontak", "Acara"])
-            elif sub == "c":
+            elif sub == "3":
                 db.lihat_tabel("sesi_foto", ["ID", "Tanggal", "Lokasi", "Fotografer", "Klien", "Hasil"])
+            elif sub == "x":
+                continue
             else:
+                console.print("[red]Opsi tidak dikenal. Kembali ke menu utama.[/red]")
                 continue
 
         elif pilihan == "5":
