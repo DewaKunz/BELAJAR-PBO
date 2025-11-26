@@ -1,6 +1,5 @@
-# ============================================
-# CONTROLLER
-# ============================================
+from model import DatabaseManager
+from view import View
 
 class Controller:
     def __init__(self, db: DatabaseManager, view: View):
@@ -57,16 +56,13 @@ class Controller:
         fid = int(self.input_non_empty("ID Fotografer: "))
         kid = int(self.input_non_empty("ID Klien: "))
 
-        nama_f = self.db.get_nama_by_id("fotografer", fid)
-        nama_k = self.db.get_nama_by_id("klien", kid)
-
         hasil = input("Catatan (opsional): ").strip()
 
         self.db.tambah("sesi_foto", {
             "tanggal": tanggal,
             "lokasi": lokasi,
-            "fotografer": nama_f,
-            "klien": nama_k,
+            "fotografer_id": fid,
+            "klien_id": kid,
             "hasil": hasil
         })
 
@@ -85,7 +81,18 @@ class Controller:
             self.view.table("KLIEN", ["ID","Nama","Kontak","Acara"], data)
 
         elif p == "3":
-            data = self.db.ambil_semua("sesi_foto")
+            # JOIN (menampilkan nama fotografer & klien)
+            self.db.cursor.execute("""
+                SELECT s.id, s.tanggal, s.lokasi,
+                       f.nama AS fotografer,
+                       k.nama AS klien,
+                       s.hasil
+                FROM sesi_foto s
+                JOIN fotografer f ON s.fotografer_id = f.id
+                JOIN klien k ON s.klien_id = k.id
+            """)
+            data = self.db.cursor.fetchall()
+
             self.view.table("SESI FOTO", ["ID","Tanggal","Lokasi","Fotografer","Klien","Hasil"], data)
 
     def run(self):
